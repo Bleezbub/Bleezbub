@@ -2,7 +2,8 @@
 """
 make_info_card.py
 Generates a neofetch-style info card SVG for Bleezbub's GitHub profile.
-Outputs: info-card.svg
+Height matched to ASCII portrait rendered table height (~511px canvas / 385px render).
+Output: info-card.svg
 """
 import os
 import sys
@@ -29,7 +30,7 @@ LINES = [
 TITLEBAR_H = 30
 PAD = 20
 CANVAS_W = 490
-CANVAS_H = 875
+CANVAS_H = 511
 
 BG = "#0d1117"
 BG2 = "#111722"
@@ -71,8 +72,8 @@ def make_svg() -> str:
     parts.append(f'<text x="{CANVAS_W/2}" y="{TITLEBAR_H/2 + 4}" fill="{TITLE_TEXT}" font-size="12" '
                  f'text-anchor="middle">{USERNAME}@github: ~$ neofetch</text>')
 
-    line_h = 32
-    y_start = TITLEBAR_H + 50
+    line_h = 36
+    y_start = TITLEBAR_H + 48
 
     # Prompt + OS line
     anim_0 = anim(0)
@@ -84,7 +85,7 @@ def make_svg() -> str:
     )
 
     # Key-value rows
-    curr_y = y_start + line_h + 10
+    curr_y = y_start + line_h + 8
     for i, (key, val) in enumerate(LINES):
         key_padded = f"{key:<11}"
         anim_i = anim(i + 1)
@@ -97,7 +98,7 @@ def make_svg() -> str:
         curr_y += line_h
 
     # Color palette bars at bottom
-    curr_y += 30
+    curr_y += 20
     colors = ["#ff5f56", "#ffbd2e", "#27c93f", "#58a6ff", "#bf7af0", "#f78166", "#79c0ff", "#56d364"]
     for ci, col in enumerate(colors):
         cx = PAD + ci * 24
@@ -111,7 +112,7 @@ def main():
     svg = make_svg()
     with open(OUT, "w", encoding="utf-8") as f:
         f.write(svg)
-    print(f"[OK] Wrote {OUT} ({len(svg)} bytes)")
+    print(f"[OK] Wrote {OUT} ({len(svg)} bytes; {CANVAS_W}x{CANVAS_H})")
 
 if __name__ == "__main__":
     main()
