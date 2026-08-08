@@ -2,11 +2,17 @@
 """
 make_info_card.py
 Generates a neofetch-style info card SVG for Bleezbub's GitHub profile.
-Height matched to ASCII portrait rendered table height (~511px canvas / 385px render).
+Height matched to ASCII portrait rendered table height (~385px).
 Output: info-card.svg
 """
 import os
 import sys
+
+# Set canvas dimensions to match ASCII portrait aspect ratio perfectly
+# ASCII rendered height at width=370 is 370 * (875/840) = 385px
+# To match this height at width=490, canvas height must be exactly 385px.
+CANVAS_W = 490
+CANVAS_H = 385
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(HERE, "..")
@@ -29,8 +35,6 @@ LINES = [
 
 TITLEBAR_H = 30
 PAD = 20
-CANVAS_W = 490
-CANVAS_H = 511
 
 BG = "#0d1117"
 BG2 = "#111722"
@@ -72,33 +76,33 @@ def make_svg() -> str:
     parts.append(f'<text x="{CANVAS_W/2}" y="{TITLEBAR_H/2 + 4}" fill="{TITLE_TEXT}" font-size="12" '
                  f'text-anchor="middle">{USERNAME}@github: ~$ neofetch</text>')
 
-    line_h = 36
-    y_start = TITLEBAR_H + 48
+    line_h = 24
+    y_start = TITLEBAR_H + 36
 
     # Prompt + OS line
     anim_0 = anim(0)
     parts.append(
         f'<g opacity="0">{anim_0}'
-        f'<text x="{PAD}" y="{y_start}" font-size="14" fill="{PROMPT_C}">></text>'
-        f'<text x="{PAD + 18}" y="{y_start}" font-size="14" fill="{VAL_C}">{OS_LINE}</text>'
+        f'<text x="{PAD}" y="{y_start}" font-size="13" fill="{PROMPT_C}">></text>'
+        f'<text x="{PAD + 18}" y="{y_start}" font-size="13" fill="{VAL_C}">{OS_LINE}</text>'
         f'</g>'
     )
 
     # Key-value rows
-    curr_y = y_start + line_h + 8
+    curr_y = y_start + line_h + 6
     for i, (key, val) in enumerate(LINES):
         key_padded = f"{key:<11}"
         anim_i = anim(i + 1)
         parts.append(
             f'<g opacity="0">{anim_i}'
-            f'<text x="{PAD}" y="{curr_y}" font-size="14" fill="{KEY_C}" font-weight="600">  {key_padded}</text>'
-            f'<text x="{PAD + 125}" y="{curr_y}" font-size="14" fill="{VAL_C}">{val}</text>'
+            f'<text x="{PAD}" y="{curr_y}" font-size="13" fill="{KEY_C}" font-weight="600">  {key_padded}</text>'
+            f'<text x="{PAD + 125}" y="{curr_y}" font-size="13" fill="{VAL_C}">{val}</text>'
             f'</g>'
         )
         curr_y += line_h
 
     # Color palette bars at bottom
-    curr_y += 20
+    curr_y += 18
     colors = ["#ff5f56", "#ffbd2e", "#27c93f", "#58a6ff", "#bf7af0", "#f78166", "#79c0ff", "#56d364"]
     for ci, col in enumerate(colors):
         cx = PAD + ci * 24
